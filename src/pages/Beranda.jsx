@@ -15,24 +15,28 @@ export default function Beranda({ profil }) {
   const inisial = (profil.nama || '').split(' ').filter(Boolean).slice(0, 2).map((s) => s[0]).join('').toUpperCase();
 
   return (
-    <section>
-      {profil.foto_url ? (
-        <img
-          src={profil.foto_url}
-          alt={profil.nama}
-          style={{ width: 180, height: 225, objectFit: 'cover', float: 'left', marginRight: 30, borderRadius: 4, border: '1px solid var(--maroon)', boxShadow: 'var(--shadow)' }}
-        />
-      ) : (
-        <div className="plate" aria-hidden="true">{inisial}</div>
-      )}
-      <h1 style={{ fontSize: '1.9rem' }}>{profil.nama}</h1>
-      <p className="muted">{profil.jabatan}</p>
-      <p style={{ maxWidth: '65ch' }}>{profil.bio}</p>
-      <div className="chips">
-        {(profil.chips || []).map((c) => <span className="chip" key={c}>{c}</span>)}
+    <section style={{ paddingTop: 8 }}>
+      <div style={{ display: 'flex', gap: 30, alignItems: 'flex-start', flexWrap: 'wrap' }}>
+        {profil.foto_url ? (
+          <img
+            src={profil.foto_url}
+            alt={profil.nama}
+            style={{ width: 180, height: 225, objectFit: 'cover', flexShrink: 0, borderRadius: 4, border: '1px solid var(--maroon)', boxShadow: 'var(--shadow)' }}
+          />
+        ) : (
+          <div className="plate" style={{ float: 'none', margin: 0, flexShrink: 0 }} aria-hidden="true">{inisial}</div>
+        )}
+        <div style={{ minWidth: 0 }}>
+          <h1 style={{ fontSize: '1.9rem' }}>{profil.nama}</h1>
+          <p className="muted">{profil.jabatan}</p>
+          <p style={{ maxWidth: '65ch' }}>{profil.bio}</p>
+          <div className="chips">
+            {(profil.chips || []).map((c) => <span className="chip" key={c}>{c}</span>)}
+          </div>
+        </div>
       </div>
 
-      <div style={{ clear: 'both', marginTop: 34 }}>
+      <div style={{ marginTop: 34 }}>
         <h2 style={{ fontSize: '1.2rem' }}>Pendidikan</h2>
         {pendidikan.length === 0 && <p className="muted">Belum ada data.</p>}
         {pendidikan.map((p) => (
