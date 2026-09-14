@@ -9,6 +9,8 @@ export default function RichTextEditor({ value, onChange }) {
   const fileRef = useRef(null);
   const markerRef = useRef(null);
   const [popup, setPopup] = useState(null); // 'link' | 'video' | null
+  const [modeKode, setModeKode] = useState(false);
+  const [kodeHtml, setKodeHtml] = useState(value || '');
   const [linkTeks, setLinkTeks] = useState('');
   const [linkUrl, setLinkUrl] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
@@ -84,6 +86,13 @@ export default function RichTextEditor({ value, onChange }) {
     setPopup(null);
   };
 
+  const bukaKode = () => { setKodeHtml(editorRef.current.innerHTML); setModeKode(true); };
+  const tutupKode = () => {
+    editorRef.current.innerHTML = kodeHtml;
+    setModeKode(false);
+    onChange(kodeHtml);
+  };
+
   const klikGambar = () => { sisipkanPenanda(); fileRef.current.click(); };
   const gambarDipilih = async (e) => {
     const file = e.target.files[0];
@@ -101,48 +110,62 @@ export default function RichTextEditor({ value, onChange }) {
   return (
     <div>
       <div className="editor-toolbar" style={{ display: 'flex', gap: 4, flexWrap: 'wrap', border: '1px solid var(--line)', borderBottom: 'none', borderRadius: '4px 4px 0 0', padding: '6px 8px', background: 'var(--paper)' }}>
-        <select onChange={(e) => { editorRef.current.focus(); document.execCommand('formatBlock', false, e.target.value); e.target.selectedIndex = 0; laporkanPerubahan(); }} defaultValue="">
-          <option value="" disabled>Format</option>
-          <option value="P">Paragraf</option>
-          <option value="H1">Judul 1</option>
-          <option value="H2">Judul 2</option>
-          <option value="H3">Judul 3</option>
-          <option value="BLOCKQUOTE">Kutipan</option>
-        </select>
-        <button type="button" onClick={() => jalankan('bold')}><b>B</b></button>
-        <button type="button" onClick={() => jalankan('italic')}><i>I</i></button>
-        <button type="button" onClick={() => jalankan('underline')}><u>U</u></button>
-        <button type="button" onClick={() => jalankan('strikeThrough')}><s>S</s></button>
-        <button type="button" onClick={() => jalankan('insertUnorderedList')}>• List</button>
-        <button type="button" onClick={() => jalankan('insertOrderedList')}>1. List</button>
-        <button type="button" onClick={() => jalankan('justifyLeft')}>⇤</button>
-        <button type="button" onClick={() => jalankan('justifyCenter')}>≡</button>
-        <button type="button" onClick={() => jalankan('justifyRight')}>⇥</button>
-        <button type="button" onClick={bukaPopupLink}>🔗</button>
-        <button type="button" onClick={() => jalankan('unlink')}>🔗✕</button>
-        <button type="button" onClick={klikGambar}>🖼</button>
-        <button type="button" onClick={bukaPopupVideo}>▶️</button>
-        <button type="button" onClick={() => jalankan('insertHorizontalRule')}>―</button>
-        <button type="button" onClick={() => jalankan('undo')}>↶</button>
-        <button type="button" onClick={() => jalankan('redo')}>↷</button>
-        <button type="button" onClick={() => jalankan('removeFormat')}>⌫format</button>
+        <span style={{ display: 'flex', gap: 4, flexWrap: 'wrap', opacity: modeKode ? 0.4 : 1, pointerEvents: modeKode ? 'none' : 'auto' }}>
+          <select onChange={(e) => { editorRef.current.focus(); document.execCommand('formatBlock', false, e.target.value); e.target.selectedIndex = 0; laporkanPerubahan(); }} defaultValue="">
+            <option value="" disabled>Format</option>
+            <option value="P">Paragraf</option>
+            <option value="H1">Judul 1</option>
+            <option value="H2">Judul 2</option>
+            <option value="H3">Judul 3</option>
+            <option value="BLOCKQUOTE">Kutipan</option>
+          </select>
+          <button type="button" onClick={() => jalankan('bold')}><b>B</b></button>
+          <button type="button" onClick={() => jalankan('italic')}><i>I</i></button>
+          <button type="button" onClick={() => jalankan('underline')}><u>U</u></button>
+          <button type="button" onClick={() => jalankan('strikeThrough')}><s>S</s></button>
+          <button type="button" onClick={() => jalankan('insertUnorderedList')}>• List</button>
+          <button type="button" onClick={() => jalankan('insertOrderedList')}>1. List</button>
+          <button type="button" onClick={() => jalankan('justifyLeft')}>⇤</button>
+          <button type="button" onClick={() => jalankan('justifyCenter')}>≡</button>
+          <button type="button" onClick={() => jalankan('justifyRight')}>⇥</button>
+          <button type="button" onClick={bukaPopupLink}>🔗</button>
+          <button type="button" onClick={() => jalankan('unlink')}>🔗✕</button>
+          <button type="button" onClick={klikGambar}>🖼</button>
+          <button type="button" onClick={bukaPopupVideo}>▶️</button>
+          <button type="button" onClick={() => jalankan('insertHorizontalRule')}>―</button>
+          <button type="button" onClick={() => jalankan('undo')}>↶</button>
+          <button type="button" onClick={() => jalankan('redo')}>↷</button>
+          <button type="button" onClick={() => jalankan('removeFormat')}>⌫format</button>
+        </span>
+        <button type="button" onClick={modeKode ? tutupKode : bukaKode} title="Lihat/edit kode HTML — bisa tempel iframe/embed langsung di sini" style={{ fontWeight: 600 }}>
+          {modeKode ? '✓ Selesai' : '</> Kode HTML'}
+        </button>
       </div>
 
-      <div
-        ref={editorRef}
-        className="editor-area"
-        contentEditable
-        suppressContentEditableWarning
-        style={{ minHeight: 160, background: 'var(--paper)', border: '1px solid var(--line)', borderRadius: '0 0 4px 4px', padding: '10px 12px', fontSize: '.92rem', lineHeight: 1.6 }}
-        dangerouslySetInnerHTML={{ __html: value }}
-        onInput={laporkanPerubahan}
-        onPaste={(e) => {
-          e.preventDefault();
-          const teks = e.clipboardData.getData('text/plain');
-          document.execCommand('insertText', false, teks);
-          laporkanPerubahan();
-        }}
-      />
+      {modeKode ? (
+        <textarea
+          value={kodeHtml}
+          onChange={(e) => setKodeHtml(e.target.value)}
+          style={{ width: '100%', minHeight: 160, background: 'var(--paper)', border: '1px solid var(--line)', borderRadius: '0 0 4px 4px', padding: '10px 12px', fontSize: '.82rem', fontFamily: "'Courier New',monospace", lineHeight: 1.6 }}
+          placeholder="Tempel kode HTML di sini, mis. <iframe> untuk video, lalu klik ✓ Selesai"
+        />
+      ) : (
+        <div
+          ref={editorRef}
+          className="editor-area"
+          contentEditable
+          suppressContentEditableWarning
+          style={{ minHeight: 160, background: 'var(--paper)', border: '1px solid var(--line)', borderRadius: '0 0 4px 4px', padding: '10px 12px', fontSize: '.92rem', lineHeight: 1.6 }}
+          dangerouslySetInnerHTML={{ __html: value }}
+          onInput={laporkanPerubahan}
+          onPaste={(e) => {
+            e.preventDefault();
+            const teks = e.clipboardData.getData('text/plain');
+            document.execCommand('insertText', false, teks);
+            laporkanPerubahan();
+          }}
+        />
+      )}
       <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={gambarDipilih} />
 
       {popup === 'link' && (

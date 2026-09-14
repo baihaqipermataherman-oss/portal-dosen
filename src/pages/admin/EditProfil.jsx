@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../../supabaseClient';
+import { supabase, unggahBerkas } from '../../supabaseClient';
 
 export default function EditProfil() {
   const [profil, setProfil] = useState(null);
@@ -7,6 +7,8 @@ export default function EditProfil() {
   const [pendidikan, setPendidikan] = useState([]);
   const [matkul, setMatkul] = useState([]);
   const [status, setStatus] = useState('');
+  const [fotoFile, setFotoFile] = useState(null);
+  const [fotoStatus, setFotoStatus] = useState('');
 
   useEffect(() => { muat(); }, []);
   const muat = async () => {
@@ -16,6 +18,22 @@ export default function EditProfil() {
     setPendidikan(pend || []);
     const { data: mk } = await supabase.from('matkul').select('*');
     setMatkul(mk || []);
+  };
+
+  const unggahFoto = async () => {
+    if (!fotoFile) return;
+    setFotoStatus('Mengunggah…');
+    try {
+      const hasil = await unggahBerkas(fotoFile, 'profil');
+      const { error } = await supabase.from('profil').update({ foto_url: hasil.url }).eq('id', 1);
+      if (error) throw error;
+      setProfil({ ...profil, foto_url: hasil.url });
+      setFotoFile(null);
+      setFotoStatus('Foto profil tersimpan.');
+      setTimeout(() => setFotoStatus(''), 2500);
+    } catch (e) {
+      setFotoStatus('Gagal mengunggah: ' + e.message);
+    }
   };
 
   const simpanProfil = async () => {
@@ -45,6 +63,26 @@ export default function EditProfil() {
 
   return (
     <div>
+      <div className="card">
+        <h3>Foto profil</h3>
+        <div style={{ display: 'flex', gap: 20, alignItems: 'center', flexWrap: 'wrap' }}>
+          {profil.foto_url ? (
+            <img src={profil.foto_url} alt="Foto profil" style={{ width: 110, height: 138, objectFit: 'cover', borderRadius: 4, border: '1px solid var(--maroon)' }} />
+          ) : (
+            <div className="plate" style={{ float: 'none', margin: 0 }} aria-hidden="true">
+              {(profil.nama || '').split(' ').filter(Boolean).slice(0, 2).map((s) => s[0]).join('').toUpperCase()}
+            </div>
+          )}
+          <div>
+            <div className="field" style={{ marginBottom: 10 }}>
+              <input type="file" accept="image/*" onChange={(e) => setFotoFile(e.target.files[0])} />
+            </div>
+            <button className="btn btn-small" onClick={unggahFoto} disabled={!fotoFile}>Unggah foto ini</button>
+            {fotoStatus && <div className="muted" style={{ marginTop: 8 }}>{fotoStatus}</div>}
+          </div>
+        </div>
+      </div>
+
       <div className="row2">
         <div className="field"><label>Nama</label><input value={profil.nama} onChange={(e) => setProfil({ ...profil, nama: e.target.value })} /></div>
         <div className="field"><label>Jabatan</label><input value={profil.jabatan} onChange={(e) => setProfil({ ...profil, jabatan: e.target.value })} /></div>

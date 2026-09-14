@@ -15,6 +15,7 @@ export default function MateriAdmin() {
   const [file, setFile] = useState(null);
   const [notice, setNotice] = useState('');
   const [matkulTerbuka, setMatkulTerbuka] = useState(new Set());
+  const [matkulBaru, setMatkulBaru] = useState('');
 
   useEffect(() => { muat(); }, []);
   const muat = async () => {
@@ -43,6 +44,15 @@ export default function MateriAdmin() {
     } catch (e) { setNotice(e.message); }
   };
 
+  const tambahMatkulBaru = async () => {
+    if (!matkulBaru.trim()) return;
+    const { data, error } = await supabase.from('matkul').insert({ kode: '', nama: matkulBaru.trim(), info: '' }).select().single();
+    if (error) { alert('Gagal menambah mata kuliah: ' + error.message); return; }
+    setMatkulList([...matkulList, data]);
+    setForm((f) => ({ ...f, matkul: data.nama }));
+    setMatkulBaru('');
+  };
+
   const hapus = async (id) => { if (!confirm('Hapus materi ini?')) return; await supabase.from('materi').delete().eq('id', id); muat(); };
   const toggleKunci = async (item) => { await supabase.from('materi').update({ terkunci: !item.terkunci }).eq('id', item.id); muat(); };
   const toggleMatkul = (mk) => { const s = new Set(matkulTerbuka); s.has(mk) ? s.delete(mk) : s.add(mk); setMatkulTerbuka(new Set(s)); };
@@ -63,8 +73,13 @@ export default function MateriAdmin() {
           </div>
           <div className="field"><label>Mata kuliah</label>
             <select value={form.matkul} onChange={(e) => setForm({ ...form, matkul: e.target.value })}>
+              {matkulList.length === 0 && <option value="">Belum ada mata kuliah</option>}
               {matkulList.map((m) => <option key={m.id} value={m.nama}>{m.nama}</option>)}
             </select>
+            <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+              <input placeholder="Tambah mata kuliah baru…" value={matkulBaru} onChange={(e) => setMatkulBaru(e.target.value)} style={{ flex: 1 }} />
+              <button type="button" className="btn-ghost btn-small" onClick={tambahMatkulBaru}>+ Tambah</button>
+            </div>
           </div>
           <div className="field"><label>Judul materi</label><input value={form.judul} onChange={(e) => setForm({ ...form, judul: e.target.value })} /></div>
         </div>

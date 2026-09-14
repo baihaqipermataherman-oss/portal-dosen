@@ -16,7 +16,15 @@ export default function Beranda({ profil }) {
 
   return (
     <section>
-      <div className="plate" aria-hidden="true">{inisial}</div>
+      {profil.foto_url ? (
+        <img
+          src={profil.foto_url}
+          alt={profil.nama}
+          style={{ width: 120, height: 150, objectFit: 'cover', float: 'left', marginRight: 24, borderRadius: 4, border: '1px solid var(--maroon)', boxShadow: 'var(--shadow)' }}
+        />
+      ) : (
+        <div className="plate" aria-hidden="true">{inisial}</div>
+      )}
       <h1 style={{ fontSize: '1.9rem' }}>{profil.nama}</h1>
       <p className="muted">{profil.jabatan}</p>
       <p style={{ maxWidth: '65ch' }}>{profil.bio}</p>
