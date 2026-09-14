@@ -88,9 +88,8 @@ export default function RichTextEditor({ value, onChange }) {
 
   const bukaKode = () => { setKodeHtml(editorRef.current.innerHTML); setModeKode(true); };
   const tutupKode = () => {
-    editorRef.current.innerHTML = kodeHtml;
-    setModeKode(false);
     onChange(kodeHtml);
+    setModeKode(false);
   };
 
   const klikGambar = () => { sisipkanPenanda(); fileRef.current.click(); };
