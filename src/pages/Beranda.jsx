@@ -20,7 +20,7 @@ export default function Beranda({ profil }) {
         <img
           src={profil.foto_url}
           alt={profil.nama}
-          style={{ width: 120, height: 150, objectFit: 'cover', float: 'left', marginRight: 24, borderRadius: 4, border: '1px solid var(--maroon)', boxShadow: 'var(--shadow)' }}
+          style={{ width: 180, height: 225, objectFit: 'cover', float: 'left', marginRight: 30, borderRadius: 4, border: '1px solid var(--maroon)', boxShadow: 'var(--shadow)' }}
         />
       ) : (
         <div className="plate" aria-hidden="true">{inisial}</div>

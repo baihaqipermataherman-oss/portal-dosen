@@ -6,7 +6,10 @@
   --shadow-hover: 0 6px 18px rgba(38,35,29,.14);
 }
 *{ box-sizing:border-box; }
+html, body, #root{ height:100%; }
 body{ margin:0; background:var(--paper); color:var(--ink); font-family:'IBM Plex Sans',sans-serif; line-height:1.65; }
+.app-shell{ display:flex; flex-direction:column; min-height:100vh; }
+.app-shell > main{ flex:1 1 auto; }
 h1,h2,h3{ font-family:'Fraunces',serif; font-weight:500; margin:0; color:var(--ink); }
 a{ color:var(--maroon); text-decoration:none; }
 a:hover{ color:var(--maroon-deep); }
@@ -30,7 +33,8 @@ header.masthead::before{
 .kop-baris .login-kecil{ font-size:.78rem; color:var(--ink-soft); border:1px solid var(--line); padding:4px 12px; border-radius:14px; }
 .kop-baris .login-kecil:hover{ border-color:var(--maroon); color:var(--maroon); }
 
-.modeswitch{ display:flex; gap:4px; overflow-x:auto; }
+.modeswitch{ display:flex; gap:4px; overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none; }
+.modeswitch::-webkit-scrollbar{ display:none; }
 .modeswitch a, .modeswitch button{
   background:transparent; border:1px solid var(--line); border-bottom:none;
   border-radius:6px 6px 0 0; padding:9px 16px; font-size:.88rem; color:var(--ink-soft);
@@ -40,7 +44,7 @@ header.masthead::before{
 .modeswitch a:hover{ color:var(--maroon); background:rgba(139,111,63,.08); }
 .modeswitch .keluar-mahasiswa{ margin-left:auto; }
 
-main{ padding:34px 0 80px; }
+main{ padding:44px 0 90px; }
 
 section > h2{ position:relative; padding-bottom:12px; margin-bottom:20px; font-size:1.5rem; }
 section > h2::after{ content:""; position:absolute; left:0; bottom:0; width:44px; height:3px; background:var(--brass); border-radius:2px; }
@@ -98,7 +102,7 @@ section > h2::after{ content:""; position:absolute; left:0; bottom:0; width:44px
 .bubble.mahasiswa{ align-self:flex-start; background:var(--paper-deep); border:1px solid var(--line); border-bottom-left-radius:4px; }
 .bubble.mahasiswa .meta{ color:var(--brass); }
 
-.plate{ width:120px; height:150px; border:1px solid var(--maroon); background:var(--paper-deep); display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-size:2rem; color:var(--maroon); position:relative; float:left; margin-right:24px; box-shadow:var(--shadow); }
+.plate{ width:180px; height:225px; border:1px solid var(--maroon); background:var(--paper-deep); display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-size:2.6rem; color:var(--maroon); position:relative; float:left; margin-right:30px; box-shadow:var(--shadow); }
 .plate::before{ content:""; position:absolute; inset:5px; border:1px solid var(--brass); }
 
 .biblio-row{ display:flex; gap:14px; border-bottom:1px solid var(--line); padding:14px 0; }

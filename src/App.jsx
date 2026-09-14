@@ -19,7 +19,7 @@ export default function App() {
   }, []);
 
   return (
-    <>
+    <div className="app-shell">
       <Header profil={profil} />
       <main className="wrap">
         <Routes>
@@ -41,6 +41,6 @@ export default function App() {
       <footer>
         <div className="wrap">© {new Date().getFullYear()} {profil?.institusi || 'Portal Dosen'}</div>
       </footer>
-    </>
+    </div>
   );
 }
