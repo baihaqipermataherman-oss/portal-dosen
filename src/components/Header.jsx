@@ -1,12 +1,13 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { wrapStyle } from '../styles/wrapStyle';
 
 export default function Header({ profil }) {
   const { sudahLogin } = useAuth();
 
   return (
     <header className="masthead">
-      <div className="wrap">
+      <div className="wrap" style={wrapStyle}>
         <div className="kop-baris">
           <span className="institusi">{profil?.institusi || 'Portal Dosen'}</span>
         </div>

@@ -31,8 +31,12 @@ function KartuMateri({ item }) {
           {hasil && hasil.tipe === 'err' && <div className="notice err">{hasil.pesan}</div>}
           {hasil && hasil.tipe === 'ok' && (
             <>
-              <div className="notice ok">Token benar. Berkas: <strong>{hasil.nama}</strong></div>
-              <a href={hasil.url} target="_blank" rel="noopener noreferrer"><button className="btn btn-small">Unduh berkas</button></a>
+              <div className="notice ok">
+                Token benar. {hasil.nama === hasil.url ? 'Materi ini berupa tautan eksternal.' : <>Berkas: <strong>{hasil.nama}</strong></>}
+              </div>
+              <a href={hasil.url} target="_blank" rel="noopener noreferrer">
+                <button className="btn btn-small">{hasil.nama === hasil.url ? 'Buka tautan' : 'Unduh berkas'}</button>
+              </a>
             </>
           )}
         </>

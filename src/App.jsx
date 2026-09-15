@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import ProtectedRoute from './components/ProtectedRoute';
 import { supabase } from './supabaseClient';
+import { wrapStyle } from './styles/wrapStyle';
 
 import Beranda from './pages/Beranda';
 import Publikasi from './pages/Publikasi';
@@ -21,7 +22,7 @@ export default function App() {
   return (
     <div className="app-shell">
       <Header profil={profil} />
-      <main className="wrap">
+      <main style={{ ...wrapStyle, paddingTop: 36, paddingBottom: 90 }}>
         <Routes>
           <Route path="/" element={<Beranda profil={profil} />} />
           <Route path="/publikasi" element={<Publikasi />} />
@@ -39,7 +40,7 @@ export default function App() {
         </Routes>
       </main>
       <footer>
-        <div className="wrap">© {new Date().getFullYear()} {profil?.institusi || 'Portal Dosen'}</div>
+        <div className="wrap" style={wrapStyle}>© {new Date().getFullYear()} {profil?.nama || 'Portal Dosen'}</div>
       </footer>
     </div>
   );
