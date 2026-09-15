@@ -23,7 +23,6 @@ export default function Login() {
     <section style={{ maxWidth: 360 }}>
       <h2>Login Dosen</h2>
       <p className="muted" style={{ marginBottom: 16 }}>
-        Gunakan akun yang dibuat di Supabase Authentication (menu Users) untuk dosen.
       </p>
       <form onSubmit={kirim}>
         <div className="field"><label>Email</label><input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></div>
