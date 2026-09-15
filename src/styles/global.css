@@ -44,7 +44,7 @@ header.masthead::before{
 .modeswitch a:hover{ color:var(--maroon); background:rgba(139,111,63,.08); }
 .modeswitch .keluar-mahasiswa{ margin-left:auto; }
 
-main{ padding:60px 0 90px; }
+main.wrap{ padding-top:60px; padding-bottom:90px; }
 
 section > h2{ position:relative; padding-bottom:12px; margin-bottom:20px; font-size:1.5rem; }
 section > h2::after{ content:""; position:absolute; left:0; bottom:0; width:44px; height:3px; background:var(--brass); border-radius:2px; }

@@ -37,6 +37,7 @@ export default function BimbinganAdmin() {
     const { error } = await supabase.from('bimbingan').insert({
       nama: form.nama.trim(), email: form.email.trim(), judul: form.judul.trim(),
       jenis: jenisAktif, tahun_ajaran: form.tahun_ajaran.trim() || tokenTA.tahun_ajaran,
+      token: genToken(),
     });
     if (error) { alert('Gagal menyimpan: ' + error.message); return; }
     setForm({ ...form, nama: '', email: '', judul: '' });
@@ -46,6 +47,13 @@ export default function BimbinganAdmin() {
   const hapusMhs = async (id) => {
     if (!confirm('Hapus data bimbingan mahasiswa ini?')) return;
     await supabase.from('bimbingan').delete().eq('id', id);
+    muatDaftar();
+  };
+
+  const buatUlangToken = async (m) => {
+    if (!confirm(`Buat token baru untuk ${m.nama}? Token lama tidak akan berlaku lagi.`)) return;
+    const tokenBaru = genToken();
+    await supabase.from('bimbingan').update({ token: tokenBaru }).eq('id', m.id);
     muatDaftar();
   };
 
@@ -65,7 +73,7 @@ export default function BimbinganAdmin() {
     <div>
       <div className="card">
         <h3>Token tahun ajaran</h3>
-        <p className="muted" style={{ marginBottom: 14 }}>Satu token yang sama dibagikan ke seluruh mahasiswa bimbingan pada tahun ajaran ini.</p>
+        <p className="muted" style={{ marginBottom: 14 }}>Token ini hanya dipakai sebagai gerbang saat mahasiswa <strong>mendaftar pertama kali</strong>. Setelah terdaftar, tiap mahasiswa punya token pribadi sendiri (lihat di daftar di bawah) untuk mengakses bimbingannya.</p>
         <div className="token-aktif">
           <div><div className="label">Label tahun ajaran</div><div className="value" style={{ fontSize: '1rem' }}>{tokenTA.tahun_ajaran || '—'}</div></div>
           <div><div className="label">Token aktif</div><div className="value">{tokenTA.token || '—'}</div></div>
@@ -110,7 +118,11 @@ export default function BimbinganAdmin() {
                   <div key={m.id}>
                     <div className="list-row" style={{ cursor: 'pointer' }} onClick={() => toggleMhs(m.id)}>
                       <div><strong>{m.nama}</strong><div className="muted">{m.judul} — {babSelesai}/6 bab selesai</div></div>
-                      <span className="muted">{mhsTerbuka.has(m.id) ? 'Sembunyikan ▲' : 'Lihat riwayat ▾'}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                        <span className="token" title="Token pribadi mahasiswa ini">{m.token || '—'}</span>
+                        <button className="btn-ghost btn-small" onClick={(e) => { e.stopPropagation(); buatUlangToken(m); }}>🔄 Buat ulang</button>
+                        <span className="muted">{mhsTerbuka.has(m.id) ? 'Sembunyikan ▲' : 'Lihat riwayat ▾'}</span>
+                      </div>
                     </div>
                     {mhsTerbuka.has(m.id) && (
                       <div className="card" style={{ marginBottom: 10 }}>
